@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Отступы</title>
+<meta name="description" content="Текстовые блоки. Связанные отступы. Положение задаётся с клавиатуры.">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Cpath d='M16 4v24M4 16h24' stroke='%232b00ff'/%3E%3C/svg%3E">
+<style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif}body{display:block;width:max-content;min-width:100%;height:auto;min-height:100%;padding:56px 64px 64px;overflow:visible}button,input{font:inherit}#viewport{position:relative;margin-inline:auto;overflow:visible;background:white;--blue:#2b00ff;outline:1px solid #000;border-radius:5px}#size-width{left:50%;top:100%;transform:translate(-50%,-50%);z-index:6}#size-height{left:100%;top:50%;transform:translate(-50%,-50%);z-index:6}#canvas{position:absolute;width:1200px;height:675px;transform-origin:top left;background:#fff;border-radius:calc(5px * var(--inverse-scale,1));--blue:#2b00ff}#add{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) scale(var(--inverse-scale,1));width:60px;height:60px;padding:0;border:0;background:transparent;color:var(--blue);cursor:pointer}#add:before,#add:after{content:"";position:absolute;background:currentColor;left:50%;top:50%;transform:translate(-50%,-50%)}#add:before{width:60px;height:1px}#add:after{height:60px;width:1px}#add:focus-visible{outline:1px solid var(--blue);outline-offset:4px}.text{position:absolute;font-size:32px;line-height:1.2;white-space:pre-wrap;overflow-wrap:anywhere;width:max-content;max-width:1160px;min-width:20px;min-height:38.4px;padding:3px;outline:none;cursor:text;z-index:2;text-align:left;}.text.selected{outline:var(--stroke,1px) solid var(--blue)}.text:empty:before{content:"\200b"}#guides{position:absolute;inset:0;pointer-events:none;z-index:3}.line{position:absolute;background:var(--blue)}#line-left,#line-right{height:var(--stroke,1px)!important}#line-top,#line-bottom{width:var(--stroke,1px)!important}.measure{position:absolute;display:flex;align-items:center;gap:0;background:white;color:var(--blue);pointer-events:auto;white-space:nowrap;font-weight:400;font-size:12px;line-height:16px;padding:0 2px;border:var(--stroke,1px) solid var(--blue)}#guides .measure,#inner-guides .measure{transform:scale(var(--inverse-scale,1));transform-origin:top left;border-width:1px}.measure input{appearance:textfield;-moz-appearance:textfield;width:1ch;min-width:1ch;font-variant-numeric:tabular-nums;padding:0;border:0;border-radius:0;background:transparent;color:inherit;text-align:right;font-weight:inherit;font-size:inherit;line-height:inherit;outline:none}.measure input::-webkit-inner-spin-button,.measure input::-webkit-outer-spin-button{appearance:none;margin:0}.measure:focus-within{z-index:5}.measure input:focus-visible{outline:none}.measure span{user-select:none}.hidden,[hidden]{display:none!important}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%)}
+#insert{position:absolute;width:28px;height:28px;border:1px solid var(--blue);border-radius:50%;background:white;color:var(--blue);padding:0;z-index:8;transform:translate(-50%,-50%) scale(var(--inverse-scale,1));cursor:pointer}#insert:before,#insert:after{content:"";position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:currentColor}#insert:before{width:18px;height:1px}#insert:after{height:18px;width:1px}#insert:focus-visible{outline:1px solid var(--blue);outline-offset:3px}.lock{position:relative;display:grid;place-items:center;width:20px;height:16px;margin:0 0 0 2px;padding:0;border:0;border-left:1px solid var(--blue);background:white;color:var(--blue);cursor:pointer}.lock-icon{position:relative;width:9px;height:7px;border:1px solid currentColor;margin-top:5px}.lock-icon:before{content:"";position:absolute;width:5px;height:6px;border:1px solid currentColor;border-bottom:0;border-radius:4px 4px 0 0;left:3px;top:-7px;transform:rotate(25deg);transform-origin:bottom left}.lock[aria-pressed="true"] .lock-icon:before{left:1px;transform:none}.lock[aria-pressed="true"] .lock-icon{background:currentColor}.lock:focus-visible{outline:1px solid var(--blue);outline-offset:2px}#notice{position:absolute;left:0;top:calc(100% + 18px);font-size:12px;color:var(--blue);max-width:100%;background:white;z-index:10}.column-frame{position:absolute;outline:var(--stroke,1px) solid #E7E5FF;pointer-events:none;z-index:1}.column-frame.row-frame{outline-color:#E6FFDA}.column-tag{position:absolute;left:0;top:0;transform:translateY(-100%) scale(var(--inverse-scale,1));transform-origin:bottom left;border:1px solid var(--blue);padding:2px 5px;color:var(--blue);background:white;white-space:nowrap;font:12px Arial;pointer-events:auto;cursor:pointer}.column-frame.selected .column-tag{background:var(--blue);color:white}.column-head{position:absolute;left:0;top:0;display:flex;align-items:center;height:20px;white-space:nowrap;color:var(--blue);background:white;border:1px solid var(--blue);font:12px Arial;pointer-events:auto;transform:scale(var(--inverse-scale,1)) translateY(-100%);transform-origin:top left;padding-right:3px}.column-head.row-head{transform:scale(var(--inverse-scale,1)) rotate(-90deg) translate(-100%,-100%);transform-origin:top left}.column-head .column-tag{position:static;transform:none;border:0;border-right:1px solid var(--blue);height:18px;padding:0 4px;font:inherit}.column-head input{appearance:textfield;width:3ch;min-width:1ch;padding:0;margin:0 0 0 4px;border:0;border-radius:0;outline:none;color:inherit;background:white;font:inherit;text-align:right;font-variant-numeric:tabular-nums}.column-head input::-webkit-inner-spin-button,.column-head input::-webkit-outer-spin-button{appearance:none}.column-frame.selected .column-tag{background:white;color:var(--blue)}#inner-guides{position:absolute;inset:0;pointer-events:none;z-index:4}.gap-line{position:absolute;background:var(--blue);pointer-events:none}#preview-toggle{position:fixed;right:16px;top:12px;z-index:30;padding:5px 9px;border:1px solid #000;border-radius:3px;background:#fff;color:#000;font:12px Arial;cursor:pointer}body.preview #guides,body.preview #inner-guides,body.preview .column-frame,body.preview #size-width,body.preview #size-height,body.preview #add,body.preview #insert,body.preview #notice{display:none!important}body.preview .text{outline:none!important;pointer-events:none;cursor:default}body.preview #canvas{pointer-events:none}#alignment{position:absolute;inset:0;pointer-events:none;z-index:9}.align-handle{position:absolute;pointer-events:auto;width:24px;height:24px;padding:0;border:0;background:transparent;color:var(--blue);transform:translate(-50%,-50%) scale(var(--inverse-scale,1));cursor:pointer}.align-handle:before{content:"";position:absolute;left:3px;top:8px;width:18px;height:6px;border:1px solid currentColor;border-radius:6px;background:white}.align-handle.vertical:before{left:8px;top:3px;width:6px;height:18px}.align-handle[aria-pressed="true"]:after{content:"";position:absolute;left:6px;top:11px;width:14px;height:2px;background:currentColor}.align-handle.vertical[aria-pressed="true"]:after{left:11px;top:6px;width:2px;height:14px}body.preview #alignment{display:none!important}#project-actions{position:fixed;right:16px;top:12px;z-index:30;display:flex;gap:6px;flex-wrap:wrap;max-width:calc(100vw - 32px);background:white}#project-actions button{position:static;padding:5px 9px;border:1px solid #000;border-radius:3px;background:white;color:#000;font:12px Arial;cursor:pointer}.track-resize{position:absolute;pointer-events:auto;touch-action:none;user-select:none;background:transparent}.track-resize.horizontal{top:0;bottom:0;width:8px;cursor:ew-resize}.track-resize.horizontal.start{left:-4px}.track-resize.horizontal.end{right:-4px}.track-resize.vertical{left:0;right:0;height:8px;cursor:ns-resize}.track-resize.vertical.start{top:-4px}.track-resize.vertical.end{bottom:-4px}.track-resize:hover{background:#2b00ff18}body.resizing-track,body.resizing-track *{user-select:none!important;cursor:var(--resize-cursor)!important}#alignment{inset:auto;display:flex;align-items:center;gap:8px;height:44px;padding:4px 7px;border:1px solid var(--blue);background:white;pointer-events:auto;transform:translateY(-100%);z-index:20;color:var(--blue)}.align-pad{position:relative;width:32px;height:32px;flex-shrink:0}#alignment .align-handle{width:12px;height:12px;transform:none;color:#e9e9e9}#alignment .align-handle:before{inset:3px 0 auto;width:12px;height:6px;border:0;background:currentColor}#alignment .align-handle.vertical:before{inset:0 auto auto 3px;width:6px;height:12px}#alignment .align-handle:after{display:none}#alignment .align-handle:hover,#alignment .align-handle[aria-pressed=true]{color:var(--blue)}.type-control{display:flex;align-items:center;gap:3px}.type-arrows{display:flex;flex-direction:column}.type-arrows button{border:0;background:none;padding:0;color:#e9e9e9;font-size:13px;line-height:15px;cursor:pointer}.type-arrows button:hover{color:var(--blue)}.type-control input{width:3ch;padding:0;border:0;outline:none;color:inherit;background:white;font:28px Arial;appearance:textfield}.type-control input::-webkit-inner-spin-button{appearance:none}.type-control input:focus-visible{background:#f1efff}#alignment{gap:6px;height:36px;padding:4px;white-space:nowrap;width:max-content;max-width:none;box-sizing:border-box}.align-pad{width:22px;height:22px}#alignment .align-handle{width:8px;height:8px}#alignment .align-handle:before{inset:2px 0 auto;width:8px;height:4px;border-radius:4px}#alignment .align-handle.vertical:before{inset:0 auto auto 2px;width:4px;height:8px}.type-control{gap:2px}.type-arrows{width:10px;gap:4px}.type-arrows button{display:block;width:10px;height:8px;padding:0;font-size:0;line-height:0;position:relative}.type-arrows button:before{content:"";position:absolute;left:0;top:1px;border-left:5px solid transparent;border-right:5px solid transparent;border-bottom:5px solid currentColor}.type-arrows button:nth-child(2):before{border-bottom:0;border-top:5px solid currentColor}.type-control input{font:24px/26px Arial;height:26px;text-align:left;min-width:2ch}.type-control input:focus-visible{outline:1px solid #e7e5ff}#alignment{height:28px;gap:4.67px;padding:3.11px}.align-pad{width:17.11px;height:17.11px}#alignment .align-handle{width:6.22px;height:6.22px}#alignment .align-handle:before{inset:1.56px 0 auto;width:6.22px;height:3.11px;border-radius:3.11px}#alignment .align-handle.vertical:before{inset:0 auto auto 1.56px;width:3.11px;height:6.22px}.type-control{gap:1.56px}.type-arrows{width:7.78px;gap:3.11px}.type-arrows button{width:7.78px;height:6.22px}.type-arrows button:before{top:.78px;border-left-width:3.89px;border-right-width:3.89px;border-bottom-width:3.89px}.type-arrows button:nth-child(2):before{border-bottom:0;border-top-width:3.89px}.type-control input{font:18.67px/20.22px Arial;height:20.22px}#size-width,#size-height{border:0;padding:0;color:#000;background:transparent;height:20px;line-height:20px}#size-width{left:50%;top:-8px;transform:translate(-50%,-100%)}#size-height{left:-28px;top:8px;transform:rotate(-90deg) translateX(-100%);transform-origin:top left}#size-width:focus-within,#size-height:focus-within{color:var(--blue)}#size-width input:focus-visible,#size-height input:focus-visible{background:#f1efff}</style>
+</head>
+<body>
+<nav id="project-actions" aria-label="Проект"><button id="save-project" type="button">Сохранить проект</button><button id="open-project" type="button">Открыть проект</button><button id="export-html" type="button">Экспорт HTML</button><button id="preview-toggle" type="button" aria-pressed="false">Превью</button></nav><input id="project-file" type="file" accept=".json,application/json" hidden>
+<main id="viewport" aria-label="Редактор отступов. Холст 1200 на 675 пикселей">
+<div id="canvas">
+<button id="add" aria-label="Добавить текст" title="Добавить текст"></button>
+<div id="text" class="text" contenteditable="plaintext-only" role="textbox" aria-label="Текстовый объект" aria-multiline="true" spellcheck="false" draggable="false" hidden></div>
+<button id="insert" aria-label="Добавить текст в промежуток" hidden></button>
+<div id="alignment" hidden><div class="align-pad">
+<button class="align-handle" id="align-left" aria-label="Выровнять влево; повторно — по центру" title="Влево / по центру"></button>
+<button class="align-handle" id="align-right" aria-label="Выровнять вправо; повторно — по центру" title="Вправо / по центру"></button>
+<button class="align-handle vertical" id="align-top" aria-label="Выровнять вверх; повторно — по центру" title="Вверх / по центру"></button>
+<button class="align-handle vertical" id="align-bottom" aria-label="Выровнять вниз; повторно — по центру" title="Вниз / по центру"></button>
+</div><div class="type-control"><div class="type-arrows"><button id="fontSize-up" aria-label="Увеличить: Размер шрифта" title="Размер шрифта">▲</button><button id="fontSize-down" aria-label="Уменьшить: Размер шрифта" title="Размер шрифта">▼</button></div><input id="fontSize" type="number" min="1" max="512" step="1" aria-label="Размер шрифта" title="Размер шрифта, px"></div><div class="type-control"><div class="type-arrows"><button id="lineHeight-up" aria-label="Увеличить: Межстрочный интервал" title="Межстрочный интервал">▲</button><button id="lineHeight-down" aria-label="Уменьшить: Межстрочный интервал" title="Межстрочный интервал">▼</button></div><input id="lineHeight" type="number" min="1" max="512" step="1" aria-label="Межстрочный интервал" title="Межстрочный интервал, px"></div></div><div id="inner-guides"></div>
+<div id="guides" hidden>
+<div class="line" id="line-left"></div><div class="line" id="line-right"></div><div class="line" id="line-top"></div><div class="line" id="line-bottom"></div>
+<div class="measure" id="label-left"><input id="left" type="number" step="0.1" min="0" aria-label="Отступ слева" title="Отступ слева, px"><span>px</span><button type="button" class="lock" id="lock-left" aria-pressed="false" aria-label="Зафиксировать отступ"><span class="lock-icon" aria-hidden="true"></span></button></div>
+<div class="measure" id="label-right"><input id="right" type="number" step="0.1" min="0" aria-label="Отступ справа" title="Отступ справа, px"><span>px</span><button type="button" class="lock" id="lock-right" aria-pressed="false" aria-label="Зафиксировать отступ"><span class="lock-icon" aria-hidden="true"></span></button></div>
+<div class="measure" id="label-top"><input id="top" type="number" step="0.1" min="0" aria-label="Отступ сверху" title="Отступ сверху, px"><span>px</span><button type="button" class="lock" id="lock-top" aria-pressed="false" aria-label="Зафиксировать отступ"><span class="lock-icon" aria-hidden="true"></span></button></div>
+<div class="measure" id="label-bottom"><input id="bottom" type="number" step="0.1" min="0" aria-label="Отступ снизу" title="Отступ снизу, px"><span>px</span><button type="button" class="lock" id="lock-bottom" aria-pressed="false" aria-label="Зафиксировать отступ"><span class="lock-icon" aria-hidden="true"></span></button></div>
+</div></div>
+<label class="measure" id="size-width"><input id="canvas-width" type="number" min="160" max="6000" step="1" value="1200" aria-label="Ширина холста" title="Ширина холста, px"><span>px</span></label>
+<label class="measure" id="size-height"><input id="canvas-height" type="number" min="100" max="6000" step="1" value="675" aria-label="Высота холста" title="Высота холста, px"><span>px</span></label>
+<div id="notice" role="status"></div></main>
+<div class="sr" id="status" aria-live="polite"></div>
+<script>
+(()=>{
+'use strict';
+let W=1200,H=675,viewScale=1;
+const $=id=>document.getElementById(id),canvas=$('canvas'),viewport=$('viewport'),guides=$('guides'),sides=['left','right','top','bottom'];
+const objects=[],columns=[];let nextId=1;let text=$('text');let state={exists:false,selected:false,x:0,y:0,w:0,h:0,active:null};
+let segments={},hoverSide=null;
+const insert=$('insert');
+let focusStart=0,lastText="Hello";
+const clamp=(n,min,max)=>Math.max(min,Math.min(max,n));
+const fmt=n=>String(Math.round(n*10)/10);
+const rect=(el,x,y,w,h)=>Object.assign(el.style,{left:x+'px',top:y+'px',width:w+'px',height:h+'px'});
+let exactRulerTarget=false;
+function membership(o,axis){return columns.find(c=>c.axis===axis&&c.children.includes(o));}
+function withRulerTarget(action){if(exactRulerTarget)return action();const selected=state;const target=!selected.children?(membership(selected,'y')||selected):selected;if(target===selected)return action();const wasSelected=target.selected;state=target;target.selected=selected.selected;try{return action();}finally{if(state===target)state=selected;target.selected=wasSelected;}}
+function render(){return withRulerTarget(()=>renderForTarget());}
+function margins(){return withRulerTarget(()=>marginsForTarget());}
+function edge(side){return withRulerTarget(()=>edgeForTarget(side));}
+function toggleLock(side){return withRulerTarget(()=>toggleLockForTarget(side));}
+function setMargin(side,value){return withRulerTarget(()=>setMarginForTarget(side,value));}
+function insertObject(side){
+ const selected=state,axis=(side==='left'||side==='right')?'x':'y';
+ // Resolve the owner of the displayed ruler, not the last text caret target.
+ const source=selected.children?selected:(membership(selected,'y')||selected);let target=source;
+ if(source.children&&source.axis!==axis){const first=[...source.children].sort((a,b)=>axis==='x'?a.y-b.y:a.x-b.x)[0];target=membership(first,axis)||first;}
+ else if(!source.children)target=membership(source,axis)||source;
+ exactRulerTarget=true;state=target;target.selected=true;
+ try{renderForTarget();const count=objects.length;insertObjectForTarget(side);if(objects.length===count)state=selected;}
+ finally{exactRulerTarget=false;render();}
+}
+function leaves(entity){return entity.children?entity.children.flatMap(leaves):[entity];}
+function updateColumns(){const visit=c=>{for(const child of c.children)if(child.children)visit(child);const minX=Math.min(...c.children.map(o=>o.x)),minY=Math.min(...c.children.map(o=>o.y)),maxX=Math.max(...c.children.map(o=>o.x+o.w)),maxY=Math.max(...c.children.map(o=>o.y+o.h));c.x=minX;c.y=minY;c.w=maxX-minX;c.h=maxY-minY;const size=c.axis==='y'?'w':'h',pos=c.axis==='y'?'x':'y';c.naturalSize=Math.max(...c.children.map(o=>o[size]));const extent=c.sizeLocked?c.explicitSize:Math.max(c.naturalSize,c.explicitSize??0);c[pos]-=(extent-c[size])*(c.alignFactor??0.5);c[size]=extent;};for(const c of columns.filter(c=>!c.parent))visit(c);
+ for(const axis of ['y','x'])columns.filter(c=>c.axis===axis).sort((a,b)=>(axis==='y'?a.x-b.x:a.y-b.y)||a.id-b.id).forEach((c,i)=>{c.name=(axis==='y'?'C':'R')+(i+1);});}
+function textWidthLimit(o){const c=membership(o,'y');if(c?.explicitSize!=null)return c.explicitSize;const factor=c?.alignFactor??(o.alignX==='left'?0:o.alignX==='right'?1:0.5),box=c||o,anchor=box.x+box.w*factor;const available=Math.min(factor>0?anchor/factor:Infinity,factor<1?(W-anchor)/(1-factor):Infinity);return Math.max(20,Math.min(W,available));}
+function constrainText(o){o.el.style.fontSize=(o.fontSize??32)+'px';o.el.style.lineHeight=(o.lineHeight??(o.fontSize??32)*1.2)+'px';o.el.style.maxWidth=textWidthLimit(o)+'px';const empty=!o.el.innerText.trim();o.el.style.width=empty?o.w+'px':'';o.el.style.minHeight=empty?o.h+'px':'';}
+function reflowText(){const selected=state,selectedText=text;for(const o of objects){state=o;text=o.el;measure();}state=selected;text=selectedText;updateColumns();}
+function overflowingRow(){return columns.find(c=>c.axis==='x'&&c.sizeLocked&&c.naturalSize>c.explicitSize+0.001);}
+function rowAlert(row){const message=`Текст не помещается в строку ${row.name}: её высота зафиксирована (${fmt(row.explicitSize)} px). Увеличьте высоту или откройте замок.`;notice(message);window.alert(message);}
+function resizeGroup(c,value,drag=null){if(!Number.isFinite(value))return;if(drag&&c.sizeLocked){notice('Размер зафиксирован. Откройте замок или введите число.');return;}choose(c);const saved=snapshot(),old=c.explicitSize;c.explicitSize=Math.max(c.axis==='y'?20:c.naturalSize,Math.min(6000,value));reflowText();if(drag){const pos=c.axis==='y'?'x':'y',size=c.axis==='y'?'w':'h',target=drag.start?drag.anchor-c[size]:drag.anchor,delta=target-c[pos];for(const o of leaves(c))o[pos]+=delta;updateColumns();}const overflow=overflowingRow();if(!solve()){c.explicitSize=old;restore(saved);for(const o of objects)constrainText(o);notice('Размер конфликтует с границами или закрытыми отступами.');if(overflow&&!drag)rowAlert(overflow);}else notice();render();}
+function toggleSizeLock(c){choose(c);const saved=snapshot(),oldLocked=c.sizeLocked,oldSize=c.explicitSize;if(c.sizeLocked)c.sizeLocked=false;else{c.explicitSize=c.axis==='y'?c.w:c.h;c.sizeLocked=true;}reflowText();const overflow=overflowingRow();if(!solve()){c.sizeLocked=oldLocked;c.explicitSize=oldSize;restore(saved);for(const o of objects)constrainText(o);if(overflow)rowAlert(overflow);else notice('Изменение замка конфликтует с текущими отступами.');}else notice();render();}
+
+function addTrackResize(c){
+ for(const start of [true,false]){
+ const handle=document.createElement('div');handle.className='track-resize '+(c.axis==='y'?'horizontal':'vertical')+' '+(start?'start':'end');handle.title=c.axis==='y'?'Изменить ширину колонки':'Изменить высоту строки';c.el.appendChild(handle);let drag=null;
+ const finish=()=>{if(!drag)return;drag=null;document.body.classList.remove('resizing-track');};
+ handle.addEventListener('pointerdown',e=>{if(e.button!==0||previewMode)return;e.preventDefault();e.stopPropagation();document.activeElement?.blur();if(c.sizeLocked){notice('Размер зафиксирован. Откройте замок или введите число.');return;}choose(c);const pos=c.axis==='y'?'x':'y',size=c.axis==='y'?'w':'h';drag={pointer:e.pointerId,coordinate:c.axis==='y'?e.clientX:e.clientY,size:c[size],anchor:c[pos]+(start?c[size]:0),start};handle.setPointerCapture(e.pointerId);document.body.style.setProperty('--resize-cursor',c.axis==='y'?'ew-resize':'ns-resize');document.body.classList.add('resizing-track');});
+ handle.addEventListener('pointermove',e=>{if(!drag||drag.pointer!==e.pointerId)return;e.preventDefault();e.stopPropagation();const coordinate=c.axis==='y'?e.clientX:e.clientY;resizeGroup(c,Math.round(drag.size+(coordinate-drag.coordinate)/viewScale*(start?-1:1)),drag);});
+ handle.addEventListener('pointerup',finish);handle.addEventListener('pointercancel',finish);handle.addEventListener('lostpointercapture',finish);
+ }
+}
+function syncTypography(o,force=false){for(const key of ['fontSize','lineHeight']){const input=$(key),value=key==='fontSize'?(o.fontSize??32):(o.lineHeight??(o.fontSize??32)*1.2);if(force||document.activeElement!==input)input.value=fmt(value);input.style.width=Math.max(2,input.value.length)+'ch';}}
+function setTypography(key,value){const o=alignmentSelection||state;if(!o.exists||o.children)return;if(!Number.isFinite(value)||value<1||value>512){syncTypography(o,true);return;}const saved=snapshot(),old=o[key];state=o;text=o.el;o[key]=value;measure();const overflow=overflowingRow();if(!solve()){o[key]=old;restore(saved);constrainText(o);notice(overflow?'Текст не помещается в строку с закрытой высотой.':'Размер текста конфликтует с границами или отступами.');}else notice();syncTypography(o,true);render();}
+for(const key of ['fontSize','lineHeight']){const input=$(key);input.addEventListener('input',()=>{const value=Number(input.value);if(input.value!==''&&Number.isFinite(value)&&value>=1&&value<=512)setTypography(key,value);});input.addEventListener('change',()=>setTypography(key,Number(input.value)));input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();setTypography(key,Number(input.value));input.blur();}});for(const [suffix,delta] of [['up',1],['down',-1]]){const button=$(key+'-'+suffix);button.addEventListener('pointerdown',e=>e.preventDefault());button.addEventListener('click',e=>{const o=alignmentSelection||state;setTypography(key,(o[key]??(key==='fontSize'?32:(o.fontSize??32)*1.2))+delta*(e.shiftKey?10:1));});}}
+function roots(){return [...objects,...columns].filter(o=>!o.parent);}
+function makeColumn(a,b,axis,single=false){const existing=a.children&&a.axis===axis?a:membership(a,axis);
+ if(existing){if(b&&!existing.children.includes(b))existing.children.push(b);updateColumns();return existing;}
+ const previous=null;
+ const el=document.createElement('div');el.className='column-frame'+(axis==='x'?' row-frame':'');const tag=document.createElement('button');tag.type='button';tag.className='column-tag';tag.textContent=axis==='y'?'Вертикальная колонка':'Горизонтальная колонка';const head=document.createElement('div');head.className='column-head '+(axis==='x'?'row-head':'');head.appendChild(tag);const sizeField=document.createElement('input');sizeField.type='number';sizeField.step='1';sizeField.max='6000';const unit=document.createElement('span');unit.textContent='px';head.appendChild(sizeField);head.appendChild(unit);const sizeLock=document.createElement('button');sizeLock.type='button';sizeLock.className='lock';const sizeIcon=document.createElement('span');sizeIcon.className='lock-icon';sizeIcon.setAttribute('aria-hidden','true');sizeLock.appendChild(sizeIcon);head.appendChild(sizeLock);el.appendChild(head);canvas.insertBefore(el,guides);
+ const c={id:nextId++,children:b?[a,b]:[a],axis,el,tag,head,sizeField,sizeLock,sizeLocked:false,explicitSize:null,selected:false,exists:true,parent:previous};
+
+ columns.push(c);addTrackResize(c);sizeLock.addEventListener('click',()=>toggleSizeLock(c));tag.addEventListener('click',()=>choose(c));sizeField.addEventListener('focus',()=>{choose(c);sizeField.select();});sizeField.addEventListener('input',()=>{sizeField.style.width=Math.max(1,sizeField.value.length)+'ch';});sizeField.addEventListener('blur',()=>{if(sizeField.value!=='')resizeGroup(c,sizeField.valueAsNumber);sizeField.value=fmt(c.axis==='y'?c.w:c.h);render();});sizeField.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();sizeField.blur();}if(e.key==='Escape'){e.preventDefault();sizeField.value=fmt(c.axis==='y'?c.w:c.h);sizeField.blur();}});updateColumns();return c;
+}
+function ensureRows(){for(const o of objects){if(membership(o,'x'))continue;const row=columns.find(c=>c.axis==='x'&&Math.abs(c.y+c.h/2-o.y-o.h/2)<0.01);if(row)row.children.push(o);else if(membership(o,'y'))makeColumn(o,null,'x',true);}updateColumns();}
+function neighbors(){const own=leaves(state);return [...columns,...objects].filter(o=>o!==state&&!leaves(o).some(leaf=>own.includes(leaf)));}
+function endpoint(entity,axis,high){if(!entity)return null;const size=axis==='x'?'w':'h';return leaves(entity).reduce((best,o)=>!best||(high?o[axis]+o[size]>best[axis]+best[size]:o[axis]<best[axis])?o:best,null);}
+function bounds(){const b={left:0,right:W,top:0,bottom:H};for(const o of neighbors()){if(o===state||leaves(state).includes(o))continue;if(o.y<state.y+state.h&&o.y+o.h>state.y){if(o.x+o.w<=state.x)b.left=Math.max(b.left,o.x+o.w);if(o.x>=state.x+state.w)b.right=Math.min(b.right,o.x);}if(o.x<state.x+state.w&&o.x+o.w>state.x){if(o.y+o.h<=state.y)b.top=Math.max(b.top,o.y+o.h);if(o.y>=state.y+state.h)b.bottom=Math.min(b.bottom,o.y);}}return b;}
+function marginsForTarget(){const b=bounds();return {left:state.x-b.left,right:b.right-state.x-state.w,top:state.y-b.top,bottom:b.bottom-state.y-state.h};}
+const locks=new Map();
+function notice(message=''){$('notice').textContent=message;}
+function edgeForTarget(side){const b=bounds(),axis=(side==='left'||side==='right')?'x':'y',size=axis==='x'?'w':'h',before=side==='left'||side==='top';let other=null;
+ for(const o of neighbors()){if(o===state||leaves(state).includes(o))continue;const perpendicular=axis==='x'?(o.y<state.y+state.h&&o.y+o.h>state.y):(o.x<state.x+state.w&&o.x+o.w>state.x);if(perpendicular&&Math.abs((before?o[axis]+o[size]:o[axis])-b[side])<0.001){other=o;break;}}
+ const a=before?other:state,c=before?state:other,key=axis+':'+(a?a.id:'start')+':'+(c?c.id:'end');return {axis,a,b:c,key,value:margins()[side]};
+}
+function snapshot(){return objects.map(o=>({o,x:o.x,y:o.y,w:o.w,h:o.h}));}
+function restore(saved){for(const {o,...values} of saved)Object.assign(o,values);updateColumns();}
+function overlappingTracks(){for(const axis of ['x','y']){const pos=axis==='x'?'y':'x',size=axis==='x'?'h':'w',tracks=columns.filter(c=>c.axis===axis).sort((a,b)=>a[pos]-b[pos]);for(let i=1;i<tracks.length;i++)if(tracks[i][pos]<tracks[i-1][pos]+tracks[i-1][size]-0.001)return true;}return false;}
+function validLayout(){return !overlappingTracks()&&columns.every(c=>(!c.sizeLocked||c.naturalSize<=c.explicitSize+0.001)&&c.x>=-0.001&&c.y>=-0.001&&c.x+c.w<=W+0.001&&c.y+c.h<=H+0.001)&&objects.every(o=>o.x>=-0.001&&o.y>=-0.001&&o.x+o.w<=W+0.001&&o.y+o.h<=H+0.001)&&!objects.some((o,i)=>objects.slice(i+1).some(a=>o.x<a.x+a.w-0.001&&o.x+o.w>a.x+0.001&&o.y<a.y+a.h-0.001&&o.y+o.h>a.y+0.001));}
+// Each locked gap is an exact distance equation. Connected blocks move together.
+function normalizeRowLocks(){for(const [key,e] of [...locks]){if(e.axis!=='y'||!e.a||!e.b||e.a.children||e.b.children)continue;const a=verticalOwner(e.a),b=verticalOwner(e.b);if(a===e.a&&b===e.b||a===b)continue;const normalized=gapEdge(a,b,'y');normalized.value=e.value-((e.b.y-e.a.y-e.a.h)-normalized.value);locks.delete(key);if(!locks.has(normalized.key))locks.set(normalized.key,normalized);}}
+function solve(extra=null,preferred=null,rigid=null){
+ updateColumns();normalizeRowLocks();
+ const equations=[...locks.values()].filter(e=>!extra||e.key!==extra.key);if(extra)equations.push(extra);
+ for(const axis of ['x','y']){const size=axis==='x'?'w':'h',extent=axis==='x'?W:H,start={},end={},graph=new Map();
+ const link=(a,b,d)=>{if(!graph.has(a))graph.set(a,[]);graph.get(a).push([b,d]);};
+ for(const e of equations.filter(e=>e.axis===axis)){const a=endpoint(e.a,axis,true)||start,b=endpoint(e.b,axis,false)||end,d=(e.a?e.a[axis]+e.a[size]-a[axis]:0)+e.value-(e.b?e.b[axis]-b[axis]:0);link(a,b,d);link(b,a,-d);}
+ // Children share the cross-axis center, including nested columns.
+ for(const c of columns){if(c.axis===axis)continue;const first=c.children[0],a=endpoint(first,axis,false);for(const child of c.children.slice(1)){const b=endpoint(child,axis,false),d=(first[axis]-a[axis])+(first[size]-child[size])*(c.alignFactor??0.5)-(child[axis]-b[axis]);link(a,b,d);link(b,a,-d);}}
+ if(rigid){const members=leaves(rigid),a=members[0];for(const b of members.slice(1)){const d=b[axis]-a[axis];link(a,b,d);link(b,a,-d);}}
+ const preferredNode=state.children?endpoint(state,axis,false):state;
+ const seen=new Set();for(const root of graph.keys()){if(seen.has(root))continue;const offsets=new Map([[root,0]]),queue=[root];let base=null;
+ for(let i=0;i<queue.length;i++){const node=queue[i],off=offsets.get(node);seen.add(node);if(node===start||node===end){const required=(node===start?0:extent)-off;if(base!==null&&Math.abs(base-required)>0.001)return false;base=required;}
+ for(const [next,d] of graph.get(node)){const v=off+d;if(offsets.has(next)){if(Math.abs(offsets.get(next)-v)>0.001)return false;}else{offsets.set(next,v);queue.push(next);}}}
+ const members=queue.filter(n=>n!==start&&n!==end);if(base===null){if(preferred&&preferred.axis===axis&&offsets.has(preferredNode))base=preferred.value+(state.children?preferredNode[axis]-state[axis]:0)-offsets.get(preferredNode);else base=members.reduce((sum,n)=>sum+n[axis]-offsets.get(n),0)/members.length;
+ const low=Math.max(...members.map(n=>-offsets.get(n))),high=Math.min(...members.map(n=>extent-n[size]-offsets.get(n)));if(low>high+0.001)return false;base=clamp(base,low,high);}
+ for(const n of members)n[axis]=base+offsets.get(n);
+ }}updateColumns();return validLayout();
+}
+function toggleLockForTarget(side){hideInsert();const e=edge(side);if(locks.has(e.key))locks.delete(e.key);else locks.set(e.key,e);notice();render();}
+for(const side of sides)$('lock-'+side).addEventListener('click',()=>toggleLock(side));
+function hideInsert(){insert.hidden=true;hoverSide=null;}
+let alignmentSelection=null;
+function choose(o){alignmentSelection=o;hideInsert();state.selected=false;state=o;if(!o.children)text=o.el;state.selected=true;render();}
+
+function applyAlignment(side){const selected=alignmentSelection||state;if(!selected.exists)return;const horizontal=side==='left'||side==='right',axis=horizontal?'x':'y',size=horizontal?'w':'h',key=horizontal?'alignX':'alignY';const members=leaves(selected),current=members[0][key]??'center',mode=current===side?'center':side,factor=mode==='center'?0.5:(mode==='left'||mode==='top'?0:1),saved=snapshot();
+ const groups=[...new Set(members.map(o=>membership(o,horizontal?'y':'x')).filter(Boolean))],oldGroups=groups.map(c=>({c,factor:c.alignFactor})),affected=[...new Set([...members,...groups.flatMap(leaves)])],oldModes=affected.map(o=>({o,value:o[key]}));
+ for(const c of groups){const start=c[axis],extent=c[size];c.alignFactor=factor;for(const o of c.children)o[axis]=start+(extent-o[size])*factor;}
+ for(const o of affected){o[key]=mode;if(horizontal)o.el.style.textAlign=mode;else o.el.style.alignContent=mode==='center'?'center':mode==='top'?'start':'end';}
+ updateColumns();if(!solve()){restore(saved);for(const old of oldGroups)old.c.alignFactor=old.factor;for(const old of oldModes){old.o[key]=old.value;if(horizontal)old.o.el.style.textAlign=old.value||'left';}updateColumns();notice('Выравнивание конфликтует с закрытыми отступами.');}else notice();render();
+}
+function renderAlignment(){const o=alignmentSelection||state;const editingBlock=!o.children&&(document.activeElement===o.el||$('alignment').contains(document.activeElement));$('alignment').hidden=!state.selected||!o.exists||!editingBlock;if($('alignment').hidden)return;$('alignment').style.left=(o.x-1/viewScale)+'px';$('alignment').style.top=o.y+'px';syncTypography(o);const points={left:[0,5.445],right:[10.89,5.445],top:[5.445,0],bottom:[5.445,10.89]};const first=leaves(o)[0];for(const side of sides){const button=$('align-'+side);button.style.left=points[side][0]+'px';button.style.top=points[side][1]+'px';button.setAttribute('aria-pressed',String((side==='left'||side==='right'?first.alignX:first.alignY)===side));}}
+for(const side of sides){const button=$('align-'+side);
+ // Keep the text caret active until the button's click is delivered.
+ button.addEventListener('pointerdown',event=>{if(event.button===0)event.preventDefault();});
+ button.addEventListener('click',()=>applyAlignment(side));
+}
+document.addEventListener('focusin',renderAlignment);
+document.addEventListener('focusout',()=>setTimeout(renderAlignment,0));
+function fit(){const scale=1;viewScale=scale;viewport.style.width=W*scale+'px';viewport.style.height=H*scale+'px';canvas.style.width=W+'px';canvas.style.height=H+'px';canvas.style.transform=`scale(${scale})`;canvas.style.setProperty('--inverse-scale',String(1/scale));canvas.style.setProperty('--stroke',(1/scale)+'px');viewport.setAttribute('aria-label',`Редактор отступов. Холст ${W} на ${H} пикселей`);}
+function sizeFields(){for(const [id,value] of [['canvas-width',W],['canvas-height',H]]){const input=$(id);if(document.activeElement!==input)input.value=String(value);input.style.width=Math.max(1,input.value.length)+'ch';}}
+function resizeCanvas(axis,value){
+ if(!Number.isFinite(value))return;
+ const oldW=W,oldH=H,saved=snapshot();notice();
+ const minX=objects.length?Math.min(...objects.map(o=>o.x)):0,minY=objects.length?Math.min(...objects.map(o=>o.y)):0;
+ const maxX=objects.length?Math.max(...objects.map(o=>o.x+o.w)):0,maxY=objects.length?Math.max(...objects.map(o=>o.y+o.h)):0;
+ if(axis==='width')W=clamp(Math.round(value),Math.max(160,maxX-minX+16),6000);
+ else H=clamp(Math.round(value),Math.max(100,maxY-minY+40),6000);
+ const dx=clamp((W-oldW)/2,-minX,W-maxX),dy=clamp((H-oldH)/2,-minY,H-maxY);
+ for(const o of objects){o.x+=dx;o.y+=dy;constrainText(o);}
+ if(!solve()){W=oldW;H=oldH;restore(saved);notice('Размер холста противоречит закрытым отступам. Измените значение или откройте замок.');}
+ for(const o of objects)constrainText(o);
+ hideInsert();
+ fit();render();sizeFields();
+}
+for(const axis of ['width','height']){
+ const input=$('canvas-'+axis);
+ input.addEventListener('focus',()=>input.select());
+ input.addEventListener('input',()=>{input.style.width=Math.max(1,input.value.length)+'ch';});
+ input.addEventListener('blur',()=>{if(input.value!=='')resizeCanvas(axis,input.valueAsNumber);input.value=String(axis==='width'?W:H);sizeFields();});
+ input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();input.blur();}if(e.key==='Escape'){e.preventDefault();input.value=String(axis==='width'?W:H);input.blur();}});
+}
+const gapControls=new Map();
+function sameGap(a,b){if(!a.a||!a.b||!b.a||!b.b||a.axis!==b.axis)return false;const axis=a.axis,size=axis==='x'?'w':'h';return leaves(a.a).some(o=>leaves(b.a).includes(o))&&leaves(a.b).some(o=>leaves(b.b).includes(o))&&Math.abs(a.a[axis]+a.a[size]-b.a[axis]-b.a[size])<0.001&&Math.abs(a.b[axis]-b.b[axis])<0.001;}
+function gapLocks(e){return [...locks.values()].filter(other=>sameGap(e,other));}
+function toggleGapLock(e){const matching=gapLocks(e);if(matching.length)for(const lock of matching)locks.delete(lock.key);else locks.set(e.key,e);notice();render();}
+function duplicateObjectGap(e){for(const ui of gapControls.values())if(!ui.label.hidden&&sameGap(e,ui.edge))return true;return false;}
+
+function verticalOwner(o){return o.children?o:(membership(o,'x')||o);}
+function gapEdge(a,b,axis){if(axis==='y'){a=verticalOwner(a);b=verticalOwner(b);}const size=axis==='x'?'w':'h';return {a,b,axis,key:axis+':'+a.id+':'+b.id,value:b[axis]-a[axis]-a[size]};}
+function horizontalOwner(o){return o.children?o:(membership(o,'y')||o);}
+function setGap(a,b,axis,value){if(axis==='y'){a=verticalOwner(a);b=verticalOwner(b);}if(!Number.isFinite(value)||value<0)return;const saved=snapshot(),selected=state,e=gapEdge(a,b,axis),delta=value-e.value,parent=axis==='y'&&a.axis==='x'&&b.axis==='x'?{children:columns.filter(c=>c.axis==='x')}:axis==='x'&&a.axis==='y'&&b.axis==='y'?{children:columns.filter(c=>c.axis==='y')}:columns.find(c=>c.axis===axis&&c.children.map(o=>axis==='x'?horizontalOwner(o):o).includes(a)&&c.children.map(o=>axis==='x'?horizontalOwner(o):o).includes(b));if(!parent)return;
+ const matchingLocks=gapLocks(e);for(const lock of matchingLocks)locks.delete(lock.key);
+ const ordered=[...new Set(parent.children.map(o=>axis==='x'?horizontalOwner(o):o))].sort((u,v)=>u[axis]-v[axis]),index=ordered.indexOf(b);for(const item of ordered.slice(index))for(const o of leaves(item))o[axis]+=delta;
+ updateColumns();state=b;e.value=value;const ok=solve(e,{axis,value:b[axis]});state=selected;
+ if(!ok){for(const lock of matchingLocks)locks.set(lock.key,lock);restore(saved);notice('Этот промежуток конфликтует с закрытыми отступами или границами холста.');}else{for(const lock of matchingLocks)locks.set(lock.key,{...lock,value});notice();}render();
+}
+function rowGapAxis(a,b){const owners=[...new Set([...leaves(a),...leaves(b)].map(horizontalOwner))];return (Math.min(...owners.map(o=>o.x))+Math.max(...owners.map(o=>o.x+o.w)))/2;}
+function renderGaps(){
+ for(const ui of gapControls.values()){ui.label.hidden=true;ui.line.hidden=true;}
+ if(!state.selected)return;
+ const vertical=columns.filter(c=>c.axis==='y').sort((a,b)=>a.x-b.x);const horizontalGaps=vertical.length>1?[{axis:'x',children:vertical,x:0,y:0,w:W,h:H,name:'колонками',el:{hidden:false},betweenColumns:true}]:[];
+ const rows=columns.filter(c=>c.axis==='x').sort((a,b)=>a.y-b.y);const rowGaps=rows.length>1?[{axis:'y',children:rows,x:0,y:0,w:W,h:H,name:'строками',el:{hidden:false},betweenRows:true}]:[];
+ for(const c of [...columns.filter(c=>c.axis!=='y'),...horizontalGaps,...rowGaps]){if(c.el.hidden)continue;const axis=c.axis,size=axis==='x'?'w':'h',ordered=[...c.children].sort((a,b)=>a[axis]-b[axis]);
+ for(let i=0;i<ordered.length-1;i++){const rawA=ordered[i],rawB=ordered[i+1];if(axis==='x'&&!c.betweenColumns&&membership(rawA,'y')&&membership(rawB,'y'))continue;const a=axis==='x'?horizontalOwner(rawA):verticalOwner(rawA),b=axis==='x'?horizontalOwner(rawB):verticalOwner(rawB);if(a===b)continue;const e=gapEdge(a,b,axis);let ui=gapControls.get(e.key);
+ if(!ui){const label=document.createElement('div');label.className='measure';const input=document.createElement('input');input.type='number';input.min='0';input.step='0.1';input.setAttribute('aria-label','Промежуток внутри '+c.name);const unit=document.createElement('span');unit.textContent='px';const button=document.createElement('button');button.type='button';button.className='lock';const icon=document.createElement('span');icon.className='lock-icon';icon.setAttribute('aria-hidden','true');button.appendChild(icon);label.appendChild(input);label.appendChild(unit);label.appendChild(button);const line=document.createElement('div');line.className='gap-line';$('inner-guides').appendChild(line);$('inner-guides').appendChild(label);ui={label,input,button,line};gapControls.set(e.key,ui);
+ input.addEventListener('focus',()=>input.select());input.addEventListener('input',()=>{input.style.width=Math.max(1,input.value.length)+'ch';});input.addEventListener('blur',()=>{if(input.value!=='')setGap(a,b,axis,input.valueAsNumber);input.value=fmt(gapEdge(a,b,axis).value);render();});input.addEventListener('keydown',event=>{if(event.key==='Enter'){event.preventDefault();input.blur();}if(event.key==='Escape'){event.preventDefault();input.value=fmt(gapEdge(a,b,axis).value);input.blur();}});
+ button.addEventListener('click',()=>{toggleGapLock(gapEdge(a,b,axis));});
+ }
+ ui.edge=e;ui.label.hidden=false;ui.line.hidden=false;if(document.activeElement!==ui.input)ui.input.value=fmt(e.value);ui.input.style.width=Math.max(1,ui.input.value.length)+'ch';const locked=gapLocks(e).length>0;ui.button.setAttribute('aria-pressed',String(locked));ui.button.setAttribute('aria-label',locked?'Разблокировать внутренний отступ':'Зафиксировать внутренний отступ');
+ const cx=c.betweenRows?rowGapAxis(a,b):c.x+c.w/2,cy=c.betweenColumns?(Math.min(a.y,b.y)+Math.max(a.y+a.h,b.y+b.h))/2:c.y+c.h/2,start=a[axis]+a[size],middle=start+e.value/2;
+ if(axis==='y')rect(ui.line,cx,start,1/viewScale,Math.max(0,e.value));else rect(ui.line,start,cy,Math.max(0,e.value),1/viewScale);
+ const w=ui.label.offsetWidth/viewScale,h=ui.label.offsetHeight/viewScale;let x=(axis==='y'?cx:middle)-w/2,y=(axis==='y'?middle:cy)-h/2;
+ if(axis==='y'&&e.value<h+8/viewScale)x=c.x+c.w+8/viewScale;
+ if(axis==='x'&&e.value<w+8/viewScale)y=c.y+c.h+8/viewScale;
+ ui.label.style.left=clamp(x,2,W-w-2)+'px';ui.label.style.top=clamp(y,2,H-h-2)+'px';
+ }}
+}
+function renderForTarget(){
+updateColumns();
+for(const c of columns){let depth=0;for(let parent=c.parent;parent;parent=parent.parent)depth++;c.head.style.top=(c.axis==='y'?-depth*22/viewScale:0)+'px';c.head.style.left=(c.axis==='x'?-depth*22/viewScale:0)+'px';c.tag.textContent=c.name;c.sizeLock.setAttribute('aria-pressed',String(c.sizeLocked));c.sizeLock.setAttribute('aria-label',(c.sizeLocked?'Разблокировать ':'Зафиксировать ')+(c.axis==='y'?'ширину ':'высоту ')+c.name);c.sizeLock.title=c.sizeLocked?'Размер зафиксирован; изменить можно вводом числа':'Размер может увеличиваться вслед за содержимым';c.sizeField.min=String(c.axis==='y'?20:c.naturalSize);c.sizeField.setAttribute('aria-label',(c.axis==='y'?'Ширина колонки ':'Высота строки ')+c.name);if(document.activeElement!==c.sizeField)c.sizeField.value=fmt(c.axis==='y'?c.w:c.h);c.sizeField.style.width=Math.max(1,c.sizeField.value.length)+'ch';if(c.axis==='y')rect(c.el,c.x,0,c.w,H);else rect(c.el,0,c.y,W,c.h);c.el.hidden=false;c.el.classList.toggle('selected',c===state&&state.selected);}
+for(const o of objects){o.el.style.left=o.x+'px';o.el.style.top=o.y+'px';o.el.classList.toggle('selected',o===state&&state.selected);}renderAlignment();renderGaps();guides.hidden=!state.selected;if(!state.selected){hideInsert();return;}
+const {x,y,w,h}=state,m=margins(),b=bounds(),cx=x+w/2,cy=y+h/2;
+rect($('line-left'),b.left,cy,m.left,1);rect($('line-right'),x+w,cy,m.right,1);rect($('line-top'),cx,b.top,1,m.top);rect($('line-bottom'),cx,y+h,1,m.bottom);segments={left:{x:b.left,y:cy,length:m.left,horizontal:true},right:{x:x+w,y:cy,length:m.right,horizontal:true},top:{x:cx,y:b.top,length:m.top,horizontal:false},bottom:{x:cx,y:y+h,length:m.bottom,horizontal:false}};
+for(const side of sides){const duplicate=duplicateObjectGap(edge(side));$('label-'+side).hidden=duplicate;$('line-'+side).hidden=duplicate&&(side==='left'||side==='right');const locked=locks.has(edge(side).key),button=$('lock-'+side);button.setAttribute('aria-pressed',String(locked));button.setAttribute('aria-label',locked?'Разблокировать отступ':'Зафиксировать отступ');button.title=locked?'Закрытый отступ: меняется только вводом числа':'Открытый отступ: меняется автоматически';const input=$(side);input.max=side==='left'||side==='right'?b.right-b.left-w:b.bottom-b.top-h;if(document.activeElement!==input)input.value=fmt(m[side]);input.style.width=Math.max(1,input.value.length)+'ch';}
+// Prefer the ruler midpoint, but keep every control clear of the text and its peers.
+const points={left:[b.left+m.left/2,cy],right:[x+w+m.right/2,cy],top:[cx,b.top+m.top/2],bottom:[cx,y+h+m.bottom/2]};
+const occupied=objects.map(o=>({x:o.x-7,y:o.y-7,w:o.w+14,h:o.h+14}));
+const overlaps=(a,b)=>a.x<b.x+b.w&&a.x+a.w>b.x&&a.y<b.y+b.h&&a.y+a.h>b.y;
+for(const side of sides){
+ const el=$('label-'+side);if(el.hidden)continue;const ew=el.offsetWidth/viewScale,eh=el.offsetHeight/viewScale;
+ const [px,py]=points[side],ideal={x:clamp(px-ew/2,4,W-ew-4),y:clamp(py-eh/2,4,H-eh-4)};
+ const xs=[ideal.x,4,W-ew-4],ys=[ideal.y,4,H-eh-4];
+ for(const box of occupied){xs.push(clamp(box.x-ew-4,4,W-ew-4),clamp(box.x+box.w+4,4,W-ew-4));ys.push(clamp(box.y-eh-4,4,H-eh-4),clamp(box.y+box.h+4,4,H-eh-4));}
+ let best=ideal,score=Infinity;
+ for(const lx of xs)for(const ly of ys){const candidate={x:lx,y:ly,w:ew,h:eh};if(occupied.some(box=>overlaps(candidate,box)))continue;const distance=(lx-ideal.x)**2+(ly-ideal.y)**2;if(distance<score){best=candidate;score=distance;}}
+ el.style.left=best.x+'px';el.style.top=best.y+'px';occupied.push({x:best.x-3,y:best.y-3,w:ew+6,h:eh+6});
+}
+}
+function select(value){state.selected=value;render();}
+function measure(keepAnchor=true){
+ const contexts=['x','y'].map(axis=>{const size=axis==='x'?'w':'h',group=membership(state,axis==='x'?'y':'x'),mode=axis==='x'?state.alignX:state.alignY,factor=group?.alignFactor??(mode==='left'||mode==='top'?0:mode==='right'||mode==='bottom'?1:0.5),box=group||state;return {axis,size,group,factor,anchor:box[axis]+box[size]*factor};});
+ constrainText(state);if(text.innerText.trim()){state.w=text.offsetWidth;state.h=text.offsetHeight;}
+ if(keepAnchor)for(const {axis,size,group,factor,anchor} of contexts){if(group){const natural=Math.max(...group.children.map(o=>o[size])),extent=group.sizeLocked?group.explicitSize:Math.max(natural,group.explicitSize??0),start=anchor-extent*factor;for(const o of group.children)o[axis]=start+(extent-o[size])*factor;}else state[axis]=anchor-state[size]*factor;}
+ render();
+}
+function newObject(){const el=document.createElement('div');el.className='text';el.contentEditable='plaintext-only';el.setAttribute('role','textbox');el.setAttribute('aria-label',`Текстовый объект ${objects.length+1}`);el.setAttribute('aria-multiline','true');el.spellcheck=false;el.draggable=false;el.textContent='Hello';el.style.maxWidth=(W-40)+'px';canvas.insertBefore(el,guides);const o={id:nextId++,exists:true,selected:false,x:0,y:0,w:el.offsetWidth,h:el.offsetHeight,el,active:null};wireText(o);return o;}
+function add(){if(objects.length)return;const o=newObject();o.x=(W-o.w)/2;o.y=(H-o.h)/2;objects.push(o);$('add').hidden=true;choose(o);}
+function insertObjectForTarget(side){if(locks.has(edge(side).key)){notice('Чтобы разделить этот отступ, сначала откройте замок.');return;}const originalSegment=segments[side];if(!originalSegment)return;const seg={...originalSegment};if(seg.horizontal){const owners=[...new Set(leaves(state).map(o=>membership(o,'y')).filter(Boolean))];if(side==='right'){const end=seg.x+seg.length;seg.x=Math.max(seg.x,...owners.map(c=>c.x+c.w));seg.length=Math.max(0,end-seg.x);}else if(owners.length)seg.length=Math.max(0,Math.min(seg.x+seg.length,...owners.map(c=>c.x))-seg.x);}const o=newObject();const extent=seg.horizontal?o.w:o.h;if(seg.length<extent+8){o.el.remove();$('status').textContent='В этом промежутке недостаточно места.';hideInsert();return;}
+ o.x=seg.horizontal?seg.x+(seg.length-o.w)/2:seg.x-o.w/2;o.y=seg.horizontal?seg.y-o.h/2:seg.y+(seg.length-o.h)/2;
+ const perpendicular=seg.horizontal?'y':'x',pos=seg.horizontal?'x':'y',dim=seg.horizontal?'w':'h';
+ const tracks=columns.filter(c=>c.axis===perpendicular&&!leaves(c).some(o=>leaves(state).includes(o))&&c[pos]+c[dim]/2>seg[pos]+o[dim]/2+2&&c[pos]+c[dim]/2<seg[pos]+seg.length-o[dim]/2-2).sort((a,b)=>(side==='bottom'||side==='right'?1:-1)*((a[pos]+a[dim]/2)-(b[pos]+b[dim]/2)));
+ if(tracks.length)o[pos]=tracks[0][pos]+tracks[0][dim]/2-o[dim]/2;
+ const collision=objects.some(a=>o.x<a.x+a.w&&o.x+o.w>a.x&&o.y<a.y+a.h&&o.y+o.h>a.y);
+ if(collision||o.x<0||o.y<0||o.x+o.w>W||o.y+o.h>H){o.el.remove();hideInsert();notice('В этом промежутке недостаточно свободного места для объекта.');return;}
+ const origin=state,saved=snapshot(),oldColumns=columns.length,tree=[...objects,...columns].map(n=>({n,parent:n.parent,children:n.children?[...n.children]:null}));objects.push(o);const c=makeColumn(origin,o,seg.horizontal?'x':'y');ensureRows();for(const item of objects){if(membership(item,'y'))continue;const matching=columns.find(g=>g.axis==='y'&&Math.abs(g.x+g.w/2-item.x-item.w/2)<0.01);if(matching)matching.children.push(item);}updateColumns();if(!solve()){objects.pop();o.el.remove();for(const added of columns.splice(oldColumns))added.el.remove();for(const entry of tree){entry.n.parent=entry.parent;if(entry.children)entry.n.children=entry.children;}restore(saved);notice('Для новой колонки не хватает места с текущими отступами.');render();return;}choose(c);$('status').textContent='Создана колонка. Отступы управляют всей колонкой; текст редактируется отдельно.';
+}
+function setMarginForTarget(side,value){if(!sides.includes(side)||!Number.isFinite(value))throw new Error('Некорректный отступ');hideInsert();notice();const saved=snapshot(),e=edge(side),old=margins()[side],b=bounds(),axis=e.axis;
+ const v=Math.max(0,value),desired=(side==='left'?b.left+v:side==='right'?b.right-state.w-v:side==='top'?b.top+v:b.bottom-state.h-v);
+ e.value=v;if(state.children){const delta=desired-state[axis];for(const o of leaves(state))o[axis]+=delta;updateColumns();}else state[axis]=desired;
+ let applied=solve(e,{axis,value:desired},state.children?state:null);
+ // Preserve internal gaps when possible; otherwise let unlocked gaps absorb the change.
+ if(!applied&&state.children){restore(saved);applied=solve(e);}
+ if(!applied){restore(saved);notice('Не хватает свободного отступа. Измените значение или откройте другой замок.');render();return old;}
+ if(locks.has(e.key))locks.set(e.key,e);render();return v;
+}
+$('add').addEventListener('click',add);
+canvas.addEventListener('pointerdown',e=>{if(e.target===canvas){document.activeElement?.blur();select(false);}});
+function deleteBlock(o){
+ if(previewMode||!objects.includes(o))return;
+ hideInsert();const removed=new Set([o]);objects.splice(objects.indexOf(o),1);o.el.remove();o.exists=false;
+ for(const c of [...columns]){c.children=c.children.filter(child=>child!==o);if(!c.children.length){removed.add(c);columns.splice(columns.indexOf(c),1);c.el.remove();c.exists=false;}}
+ for(const [key,e] of locks)if(removed.has(e.a)||removed.has(e.b))locks.delete(key);
+ for(const ui of gapControls.values()){ui.label.remove();ui.line.remove();}gapControls.clear();
+ state.selected=false;state={exists:false,selected:false,x:0,y:0,w:0,h:0};alignmentSelection=null;segments={};text=$('text');
+ updateColumns();$('add').hidden=objects.length>0;render();notice('Блок удалён.');
+}
+function wireText(o){const el=o.el;o.acceptedText=el.innerText;
+ el.addEventListener('focus',()=>choose(o));el.addEventListener('click',()=>choose(o));
+ el.addEventListener('input',()=>{choose(o);const saved=snapshot();measure();const overflow=overflowingRow();const tooTall=el.offsetHeight>H;const solved=solve();const trackCollision=overlappingTracks();const collision=objects.some(a=>a!==o&&o.x<a.x+a.w&&o.x+o.w>a.x&&o.y<a.y+a.h&&o.y+o.h>a.y);if(tooTall||collision||!solved){el.textContent=o.acceptedText;restore(saved);constrainText(o);render();if(overflow)rowAlert(overflow);else notice(trackCollision?'Строки или колонки пересекаются. Увеличьте расстояние между ними.':collision?'Текст пересекается с другим блоком. Увеличьте расстояние между ними.':tooTall?'Высота текста больше высоты холста. Увеличьте холст.':'Не удалось разместить текст в границах холста с текущими размерами и отступами.');}else{o.acceptedText=el.innerText;notice();render();}});
+ el.addEventListener('cut',e=>{const selection=window.getSelection();if(previewMode||!selection||!selection.isCollapsed)return;e.preventDefault();e.clipboardData?.setData('text/plain',el.innerText);deleteBlock(o);});
+ el.addEventListener('paste',e=>{e.preventDefault();document.execCommand('insertText',false,e.clipboardData.getData('text/plain'));});
+ el.addEventListener('keydown',e=>{if(e.key==='Escape'){el.blur();select(false);}});
+}
+canvas.addEventListener('pointermove',e=>{
+ if(e.target===insert||insert.contains(e.target))return;
+ if(!state.selected||e.target.closest('.measure,.text,#add,.column-head,.align-handle')){hideInsert();return;}
+ const r=canvas.getBoundingClientRect(),px=(e.clientX-r.left)/viewScale,py=(e.clientY-r.top)/viewScale;
+ for(const side of sides){if(locks.has(edge(side).key))continue;const seg=segments[side],along=seg.horizontal?px-seg.x:py-seg.y,across=seg.horizontal?Math.abs(py-seg.y):Math.abs(px-seg.x);
+ if(along<0||along>seg.length||across>10/viewScale||seg.length<(seg.horizontal?80:45)+8)continue;
+ const bx=seg.horizontal?px:seg.x,by=seg.horizontal?seg.y:py;
+ const sx=r.left+bx*viewScale,sy=r.top+by*viewScale;
+ const blocked=[...document.querySelectorAll('.measure,.text,.column-head')].some(el=>{if(el.hidden)return false;const q=el.getBoundingClientRect();return sx+16>q.left&&sx-16<q.right&&sy+16>q.top&&sy-16<q.bottom;});
+ if(blocked)continue;
+ hoverSide=side;insert.style.left=bx+'px';insert.style.top=by+'px';insert.hidden=false;return;
+ }hideInsert();
+});
+canvas.addEventListener('pointerleave',hideInsert);
+insert.addEventListener('click',()=>{if(hoverSide)insertObject(hoverSide);});
+for(const side of sides){const input=$(side);input.addEventListener('focus',()=>{focusStart=margins()[side];state.active=side;select(true);input.select();});input.addEventListener('input',()=>{input.style.width=Math.max(1,input.value.length)+'ch';});input.addEventListener('blur',()=>{state.active=null;if(input.value!==''&&Number.isFinite(input.valueAsNumber))setMargin(side,input.valueAsNumber);input.value=fmt(margins()[side]);render();});input.addEventListener('keydown',e=>{if(e.key==='Enter'){e.preventDefault();input.blur();}if(e.key==='Escape'){e.preventDefault();input.value=fmt(focusStart);input.blur();}});}
+canvas.addEventListener('dragstart',e=>e.preventDefault());canvas.addEventListener('drop',e=>e.preventDefault());canvas.addEventListener('dragover',e=>e.preventDefault());
+function projectData(){return {format:'marginal-design',version:1,canvas:{width:W,height:H},objects:objects.map(o=>({id:o.id,text:o.el.innerText,x:o.x,y:o.y,w:o.w,h:o.h,alignX:o.alignX??null,alignY:o.alignY??null,fontSize:o.fontSize??32,lineHeight:o.lineHeight??null})),groups:columns.map(c=>({id:c.id,axis:c.axis,children:c.children.map(o=>o.id),explicitSize:c.explicitSize,sizeLocked:c.sizeLocked,alignFactor:c.alignFactor??0.5})),locks:[...locks.values()].map(e=>({axis:e.axis,a:e.a?.id??null,b:e.b?.id??null,value:e.value}))};}
+function validateProject(data){
+ const fail=()=>{throw new Error('Файл не является поддерживаемым проектом Marginal Design.');},num=(n,min,max)=>typeof n==='number'&&Number.isFinite(n)&&n>=min&&n<=max;
+ if(!data||data.format!=='marginal-design'||data.version!==1||!data.canvas||!num(data.canvas.width,20,6000)||!num(data.canvas.height,20,6000)||!Array.isArray(data.objects)||!Array.isArray(data.groups)||!Array.isArray(data.locks)||data.objects.length>2000||data.groups.length>4000||data.locks.length>10000)fail();
+ const ids=new Set(),objectIds=new Set();for(const o of data.objects){if(!o||!Number.isSafeInteger(o.id)||o.id<1||ids.has(o.id)||typeof o.text!=='string'||(o.fontSize!==undefined&&!num(o.fontSize,1,512))||(o.lineHeight!=null&&!num(o.lineHeight,1,512))||!num(o.x,0,data.canvas.width)||!num(o.y,0,data.canvas.height)||!num(o.w,1,data.canvas.width)||!num(o.h,1,data.canvas.height)||o.x+o.w>data.canvas.width+0.01||o.y+o.h>data.canvas.height+0.01||![null,'left','center','right'].includes(o.alignX)||![null,'top','center','bottom'].includes(o.alignY))fail();ids.add(o.id);objectIds.add(o.id);}
+ const memberships=new Set();for(const c of data.groups){if(!c||!Number.isSafeInteger(c.id)||c.id<1||ids.has(c.id)||!['x','y'].includes(c.axis)||!Array.isArray(c.children)||!c.children.length||!c.children.every(id=>objectIds.has(id))||new Set(c.children).size!==c.children.length||typeof c.sizeLocked!=='boolean'||(c.explicitSize!==null&&!num(c.explicitSize,1,6000))||(c.sizeLocked&&c.explicitSize===null)||![0,0.5,1].includes(c.alignFactor))fail();for(const id of c.children){const key=c.axis+':'+id;if(memberships.has(key))fail();memberships.add(key);}ids.add(c.id);}
+ const edges=new Set();for(const e of data.locks){if(!e||!['x','y'].includes(e.axis)||(e.a!==null&&!ids.has(e.a))||(e.b!==null&&!ids.has(e.b))||e.a===e.b||!num(e.value,0,6000))fail();const key=e.axis+':'+e.a+':'+e.b;if(edges.has(key))fail();edges.add(key);}return data;
+}
+function restoreProject(data){
+ hideInsert();for(const o of objects)o.el.remove();for(const c of columns)c.el.remove();for(const ui of gapControls.values()){ui.label.remove();ui.line.remove();}objects.length=0;columns.length=0;locks.clear();gapControls.clear();alignmentSelection=null;state={exists:false,selected:false,x:0,y:0,w:0,h:0};
+ W=data.canvas.width;H=data.canvas.height;const entities=new Map();nextId=1;
+ for(const saved of data.objects){const o=newObject();Object.assign(o,{id:saved.id,x:saved.x,y:saved.y,w:saved.w,h:saved.h,alignX:saved.alignX,alignY:saved.alignY,fontSize:saved.fontSize??32,lineHeight:saved.lineHeight??null});o.el.textContent=saved.text;o.acceptedText=saved.text;o.el.style.textAlign=saved.alignX||'left';o.el.contentEditable=previewMode?'false':'plaintext-only';objects.push(o);entities.set(o.id,o);}
+ for(const saved of data.groups){const c=makeColumn(entities.get(saved.children[0]),null,saved.axis,true);c.id=saved.id;c.children=saved.children.map(id=>entities.get(id));c.explicitSize=saved.explicitSize;c.sizeLocked=saved.sizeLocked;c.alignFactor=saved.alignFactor;entities.set(c.id,c);}
+ for(const saved of data.locks){const a=saved.a===null?null:entities.get(saved.a),b=saved.b===null?null:entities.get(saved.b),key=saved.axis+':'+(a?a.id:'start')+':'+(b?b.id:'end');locks.set(key,{...saved,a,b,key});}
+ nextId=Math.max(0,...entities.keys())+1;for(const o of objects)constrainText(o);$('add').hidden=objects.length>0;fit();sizeFields();updateColumns();normalizeRowLocks();render();
+}
+function loadProject(data){validateProject(data);const backup=projectData();try{restoreProject(data);if(!validLayout())throw new Error('Проект содержит пересекающиеся блоки, строки или колонки либо выходит за границы холста.');}catch(error){restoreProject(backup);throw error;}}
+function downloadFile(name,content,type){const blob=new Blob([content],{type}),url=URL.createObjectURL(blob),link=document.createElement('a');link.href=url;link.download=name;document.body.appendChild(link);link.click();link.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}
+const escapeHTML=value=>String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));
+function exportHTML(){const blocks=[...objects].sort((a,b)=>a.y-b.y||a.x-b.x).map(o=>{const width=o.el.getBoundingClientRect().width;return `<div class="text" style="left:${o.x}px;top:${o.y}px;width:${width}px;min-height:${o.h}px;font-size:${o.fontSize??32}px;line-height:${o.lineHeight??(o.fontSize??32)*1.2}px;text-align:${o.alignX||'left'}">${escapeHTML(o.el.innerText)}</div>`;}).join('\n');return `<!doctype html>
+<html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>Marginal Design</title><style>*{box-sizing:border-box}body{margin:0;background:#fff;color:#000;font-family:Arial,Helvetica,sans-serif}.page-viewport{width:100%;max-width:${W}px;margin-inline:auto;overflow:hidden}.page{position:relative;width:${W}px;height:${H}px;transform-origin:top left}.text{position:absolute;font-size:32px;line-height:1.2;white-space:pre-wrap;overflow-wrap:anywhere;min-width:20px;min-height:38.4px;padding:3px}</style></head><body><div class="page-viewport"><main class="page">${blocks}</main></div><script>(()=>{const viewport=document.querySelector('.page-viewport'),page=document.querySelector('.page');function fit(){const scale=Math.min(1,viewport.clientWidth/${W});page.style.transform='scale('+scale+')';viewport.style.height=(${H}*scale)+'px';}fit();window.addEventListener('resize',fit);if(typeof ResizeObserver!=='undefined')new ResizeObserver(fit).observe(viewport);})();<\/script></body></html>`;}
+$('save-project').addEventListener('click',()=>{document.activeElement?.blur();downloadFile('marginal-project.json',JSON.stringify(projectData(),null,2),'application/json');notice('Файл проекта сохранён в загрузки.');});
+$('export-html').addEventListener('click',()=>{document.activeElement?.blur();downloadFile('marginal-page.html',exportHTML(),'text/html;charset=utf-8');notice('HTML-страница сохранена в загрузки.');});
+$('open-project').addEventListener('click',()=>{$('project-file').value='';$('project-file').click();});
+$('project-file').addEventListener('change',async event=>{const file=event.target.files[0];if(!file)return;try{if(file.size>5*1024*1024)throw new Error('Файл проекта слишком большой.');const data=validateProject(JSON.parse(await file.text()));if(objects.length&&!window.confirm('Открыть проект вместо текущего? Сначала сохраните текущую работу, если она нужна.'))return;loadProject(data);notice('Проект открыт.');}catch(error){notice(error instanceof SyntaxError?'Не удалось прочитать файл проекта.':error.message);}});
+let previewMode=false;
+$('preview-toggle').addEventListener('click',()=>{
+ document.activeElement?.blur();hideInsert();previewMode=!previewMode;
+ document.body.classList.toggle('preview',previewMode);
+ $('preview-toggle').textContent=previewMode?'Редактировать':'Превью';
+ $('preview-toggle').setAttribute('aria-pressed',String(previewMode));
+ for(const o of objects)o.el.contentEditable=previewMode?'false':'plaintext-only';
+ for(const input of document.querySelectorAll('#guides input,#inner-guides input,.column-head input,#canvas-width,#canvas-height'))input.disabled=previewMode;
+ if(!previewMode)render();
+});
+window.addEventListener('resize',()=>{fit();render();});fit();sizeFields();
+const context=document.modelContext;
+if(context?.registerTool){const tool={name:'configure_text_layout',description:'Add the first text or edit the selected text object and change its gaps to adjacent objects or canvas edges.',inputSchema:{type:'object',properties:{text:{type:'string'},side:{type:'string',enum:sides},value:{type:'number',minimum:0}},additionalProperties:false},annotations:{readOnlyHint:false,untrustedContentHint:true},execute(input){if(!input||typeof input!=='object'||(input.text!==undefined&&(typeof input.text!=='string'))||((input.side!==undefined||input.value!==undefined)&&(!sides.includes(input.side)||!Number.isFinite(input.value)||input.value<0)))throw new Error('Invalid layout input');add();if(state.children)choose(leaves(state)[0]);if(input.text!==undefined){const saved=snapshot(),previous=text.innerText;text.textContent=input.text;constrainText(state);if(text.offsetHeight>H-40){text.textContent=lastText;throw new Error('Text exceeds canvas height');}measure();if(!solve()){text.textContent=previous;restore(saved);render();throw new Error('Text conflicts with locked spacing');}lastText=input.text;render();}if(input.side!==undefined)setMargin(input.side,input.value);select(true);return {text:text.innerText,canvas:{width:W,height:H},margins:margins()};}};try{Promise.resolve(context.registerTool(tool)).catch(()=>{});}catch{}}
+})();
+</script>
+</body></html>
